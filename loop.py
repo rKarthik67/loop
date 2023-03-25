@@ -39,12 +39,14 @@ class BusinessHours(db.Model):
     end_time_local = db.Column(db.Time)
 
     def __init__(self, store_id, day_of_week, start_time_local, end_time_local):
-        if store_id not in [store.id for store in Store.query.all()]:
-            store_id = None
+        store_ids = [store.id for store in Store.query.all()]
+        if store_id not in store_ids:
+            raise ValueError(f'Invalid store_id {store_id}. Must be one of {store_ids}')
         self.store_id = store_id
         self.day_of_week = day_of_week
         self.start_time_local = start_time_local
         self.end_time_local = end_time_local
+
 
     def __repr__(self):
         return f'<BusinessHours {self.store_id} {self.day_of_week}>'
